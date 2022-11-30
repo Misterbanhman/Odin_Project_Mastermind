@@ -106,13 +106,14 @@ class GameBoard
 
     end
             
-
-    def simulate_game()
+    #Simulates game with computer as Codemaker and human as Codebreaker
+    def simulate_game_1()
       computer_choice = randomize()
     #   puts computer_choice
       
-      while @@win_condition == false && @@turn_counter < 11
+      while @@win_condition == false && @@turn_counter < 10
         for i in 1..4 do
+            puts "--------------ROUND #{@@turn_counter}--------------"
             puts "Please enter a color choice you'd like for position " + i.to_s 
             puts "--------------------------------\n"
             choice = gets.chomp
@@ -127,7 +128,7 @@ class GameBoard
         if check_win(hints) == true
             puts "--------------------------------------------"
             puts "You have won the game on ROUND #{@@turn_counter}! Congratulations!"
-            break
+            exit 1
         else
             puts "\nUnfortunately your selection did not match the codemaker. Please try again!"
             puts "\n"
@@ -135,8 +136,52 @@ class GameBoard
             @choice_array = []
         end
       end
+      puts "You were not able to decipher the code in #{@@turn_counter} ROUNDS!!"
+    end
+
+    def simulate_game_2()
+        puts "You are the Codemaker! Please choose different colors to fill all four positions."
+        for i in 1..4 do
+            puts "Please enter a color choice you'd like for position " + i.to_s 
+            puts "--------------------------------\n"
+            choice = gets.chomp
+            puts "\n"
+            check_valid_move(choice)
+        end
+
+        converted_player_choice = convert_to_color(@choice_array)
+
+        puts "You've created the board: \n--------------------------------"
+        puts board_display(converted_player_choice,[])
+        puts "--------------------------------"
+
+        puts "\nThe computer will now try and guess your code."
+
+        while @@win_condition == false && @@turn_counter < 11
+            computer_choice = randomize()
+            hints = compare(converted_player_choice, computer_choice)
+            puts "\n--------------ROUND #{@@turn_counter}--------------"
+            puts "\n"
+            board_display(computer_choice, hints)
+            @@turn_counter += 1
+
+            if check_win(hints) == true
+                puts "\n The computer has deciphered your code on ROUND #{@@turn_counter}!".colorize(color: :green)
+                exit 1
+            end
+        end
+        puts "\nThe computer was UNABLE to decipher your code. You win!".colorize(color: :red)
     end
 end
 
 test = GameBoard.new()
-test.simulate_game
+puts "Please choose a game mode. Please enter '1' to be CodeMaker or '2' to be the CodeBreaker."
+choice = gets.chomp
+
+if choice.to_i == 1
+    test.simulate_game_2
+elsif choice.to_i == 2
+    test.simulate_game_1
+else
+    "The value you entered was neither '1' nor '2'."
+end
