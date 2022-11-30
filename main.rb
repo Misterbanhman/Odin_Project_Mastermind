@@ -105,7 +105,19 @@ class GameBoard
       end
 
     end
-            
+       
+    def choose_game(choice)
+        if choice.to_i == 1
+            simulate_game_2()
+        elsif choice.to_i == 2
+            simulate_game_1()
+        else
+            puts "The value you entered was neither '1' nor '2'. Please try again!"
+            new_choice = gets.chomp
+            choose_game(new_choice)
+        end
+    end
+
     #Simulates game with computer as Codemaker and human as Codebreaker
     def simulate_game_1()
       computer_choice = randomize()
@@ -177,11 +189,4 @@ end
 test = GameBoard.new()
 puts "Please choose a game mode. Please enter '1' to be CodeMaker or '2' to be the CodeBreaker."
 choice = gets.chomp
-
-if choice.to_i == 1
-    test.simulate_game_2
-elsif choice.to_i == 2
-    test.simulate_game_1
-else
-    "The value you entered was neither '1' nor '2'."
-end
+test.choose_game(choice)
